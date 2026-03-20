@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Spotify Variable</title>
+
+<style>
+body {
+  margin: 0;
+  background: black;
+  color: white;
+  font-family: monospace;
+}
+
+.container {
+  display: flex;
+  height: 100vh;
+}
+
+.left {
+  width: 30%;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+}
+
+.top-text {
+  font-size: 12px;
+  opacity: 0.5;
+}
+
+.title {
+  font-size: 40px;
+}
+
+.param-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.param {
+  font-size: 34px;
+}
+
+.center {
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.center img, .center svg {
+  width: 260px;
+}
+
+.right {
+  width: 30%;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 35px;
+}
+
+.option {
+  text-align: center;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.option:hover {
+  transform: scale(1.15);
+  filter: drop-shadow(0 0 8px #1DB954);
+}
+
+.option img {
+  width: 100px;
+}
+
+.option p {
+  font-size: 11px;
+}
+
+.controls {
+  margin-top: 20px;
+}
+
+input[type="range"] {
+  width: 200px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="left">
+  <div class="top-text">LOGOTIPO VARIABLE</div>
+  <div class="title">SPOTIFY</div>
+
+  <div class="param-container">
+    <div class="param" id="paramText">ORIGINAL</div>
+  </div>
+</div>
+
+<div class="center">
+
+  <img id="logoImg" src="original.svg">
+
+  <svg viewBox="0 0 168 168" id="logoSVG" style="display:none;">
+    <circle cx="84" cy="84" r="84" fill="#1DB954"/>
+
+    <path id="wave1" fill="none" stroke="black" stroke-linecap="round"/>
+    <path id="wave2" fill="none" stroke="black" stroke-linecap="round"/>
+    <path id="wave3" fill="none" stroke="black" stroke-linecap="round"/>
+  </svg>
+
+  <div class="controls">
+    <input type="range" id="slider" style="display:none;">
+  </div>
+
+</div>
+
+<div class="right">
+
+  <div class="option" onclick="setMode('original')">
+    <img src="original.png">
+    <p>ORIGINAL</p>
+  </div>
+
+  <div class="option" onclick="setMode('opacidad')">
+    <img src="opacidad.png">
+    <p>OPACIDAD</p>
+  </div>
+
+  <div class="option" onclick="setMode('espaciado')">
+    <img src="espaciado.png">
+    <p>ESPACIADO</p>
+  </div>
+
+  <div class="option" onclick="setMode('grosor')">
+    <img src="grosor.png">
+    <p>GROSOR</p>
+  </div>
+
+</div>
+
+</div>
+
+<script>
+const img = document.getElementById("logoImg");
+const svg = document.getElementById("logoSVG");
+
+const wave1 = document.getElementById("wave1");
+const wave2 = document.getElementById("wave2");
+const wave3 = document.getElementById("wave3");
+
+const slider = document.getElementById("slider");
+const text = document.getElementById("paramText");
+
+let mode = "original";
+
+function setMode(m) {
+  mode = m;
+  text.innerText = m.toUpperCase();
+
+  if (m === "original") {
+    img.style.display = "block";
+    svg.style.display = "none";
+    slider.style.display = "none";
+  } else {
+    img.style.display = "none";
+    svg.style.display = "block";
+    slider.style.display = "block";
+  }
+
+  if (m === "opacidad") {
+    slider.min = 0;
+    slider.max = 100;
+    slider.value = 100;
+  }
+
+  if (m === "espaciado") {
+    slider.min = 5;
+    slider.max = 40;
+    slider.value = 20; 
+  }
+
+  if (m === "grosor") {
+    slider.min = 5;
+    slider.max = 25;
+    slider.value = 13; 
+  }
+
+  update();
+}
+
+function update() {
+
+  let val = parseInt(slider.value);
+
+  let spacing = 20;
+  let thickness = 13;
+  let opacity = 100;
+
+  if (mode === "espaciado") spacing = val;
+  if (mode === "grosor") thickness = val;
+  if (mode === "opacidad") opacity = val;
+
+  let center = 84;
+  let y1 = center - spacing;
+  let y2 = center;
+  let y3 = center + spacing;
+
+  wave1.setAttribute("d", `M25 ${y1} C70 ${y1-12},115 ${y1-12},145 ${y1}`);
+  wave2.setAttribute("d", `M30 ${y2} C75 ${y2-10},112 ${y2-10},140 ${y2}`);
+  wave3.setAttribute("d", `M35 ${y3} C80 ${y3-8},110 ${y3-8},135 ${y3}`);
+
+
+  if (mode === "grosor") {
+    wave1.setAttribute("stroke-width", thickness);
+    wave2.setAttribute("stroke-width", thickness - 1);
+    wave3.setAttribute("stroke-width", thickness - 2);
+  } else {
+    wave1.setAttribute("stroke-width", 13);
+    wave2.setAttribute("stroke-width", 12);
+    wave3.setAttribute("stroke-width", 11);
+  }
+
+  wave1.setAttribute("stroke-opacity", opacity / 100);
+  wave2.setAttribute("stroke-opacity", Math.max((opacity - 15) / 100, 0));
+  wave3.setAttribute("stroke-opacity", Math.max((opacity - 30) / 100, 0));
+}
+
+slider.addEventListener("input", update);
+
+update();
+</script>
+
+</body>
+</html>
+
+
+
